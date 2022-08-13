@@ -1,8 +1,39 @@
 // Canvas setup
 const canvas = document.querySelector("#stage");
 const ctx = canvas.getContext("2d");
-canvas.width = 608;
-canvas.height = 608;
+canvas.width = 640;
+canvas.height = 640;
+let cell = 32;
+let requestId;
+let score = 0;
+
+// let spawnFood = {
+//   x: Math.floor(Math.random() * 18 + 1) * cell,
+//   y: Math.floor(Math.random() * 18 + 3) * cell,
+// };
+
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+}
+
+let spawnFood = {
+  //   x: Math.floor(Math.random() * 18 + 1) * cell,
+  //   y: Math.floor(Math.random() * 19 + 3) * cell,
+
+  x: getRandomIntInclusive(1, 18) * cell,
+  y: getRandomIntInclusive(2, 18) * cell,
+};
+
+console.log(`x: ${spawnFood.x}, y: ${spawnFood.y}`);
+
+let snake = [];
+
+snake[0] = {
+  x: 9 * cell,
+  y: 10 * cell,
+};
 
 // Основной игровой цикл
 function animate() {
@@ -12,10 +43,43 @@ function animate() {
 }
 
 function update() {}
-function render() {}
+function render() {
+  ctx.fillStyle = "#8B4513";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// const foodImg = newImage();
-// foodImg.src = "img/food.png";
+  let flag = true;
+
+  for (let x = 32; x < 608; x += 32) {
+    for (let y = 64; y < 608; y += 32) {
+      if (flag) {
+        ctx.fillStyle = "#F0E68C";
+        ctx.fillRect(x, y, cell, cell);
+      } else {
+        ctx.fillStyle = "#BDB76B";
+        ctx.fillRect(x, y, cell, cell);
+      }
+      flag = !flag;
+      //console.log(`x: ${x}, y:${y}, ${flag}`);
+    }
+  }
+
+  ctx.fillStyle = "#fff";
+  ctx.font = "42px Helvetica";
+  ctx.fillText(`Your score: ${score}`, cell, cell * 1.3);
+
+  ctx.fillStyle = "#4B0082";
+
+  //   ctx.beginPath();
+  //   ctx.arc(spawnFood.x, spawnFood.y, 16, 0, 2 * Math.PI);
+  //   ctx.fill();
+
+  ctx.fillRect(spawnFood.x, spawnFood.y, cell, cell);
+  requestId = requestAnimationFrame(render);
+}
+
+animate();
+
+//cancelAnimationFrame(requestId);
 
 // class Food {
 //   constructor() {
@@ -45,25 +109,10 @@ function render() {}
 // new Food(1);
 // new Food(2);
 
-// let box = 32;
-// let score = 0;
-
 // // let food = {
 // //   x: Math.floor(Math.random() * 17 + 1) * box,
 // //   y: Math.floor(Math.random() * 15 + 3) * box,
 // // };
-
-// const ground = new Image();
-// ground.src = "img/ground.png";
-
-// // const foodImg = new Image();
-// // foodImg.src = "img/food.png";
-
-// let snake = [];
-// snake[0] = {
-//   x: 9 * box,
-//   y: 10 * box,
-// };
 
 // document.addEventListener("keydown", direction);
 
@@ -83,17 +132,11 @@ function render() {}
 // }
 
 // function draw() {
-//   ctx.drawImage(ground, 0, 0);
-//   ctx.drawImage(foodImg, food.x, food.y);
 
 //   for (let i = 0; i < snake.length; i++) {
 //     ctx.fillStyle = i == 0 ? "green" : "red";
 //     ctx.fillRect(snake[i].x, snake[i].y, box, box);
 //   }
-
-//   ctx.fillStyle = "#fff";
-//   ctx.font = "50px Arial";
-//   ctx.fillText(score, box * 2.5, box * 1.7);
 
 //   let snakeX = snake[0].x;
 //   let snakeY = snake[0].y;
