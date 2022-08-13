@@ -1,3 +1,7 @@
+body {
+    overflow: hidden;
+}
+
 #stage {
     display: block;
     margin: 0 auto;
