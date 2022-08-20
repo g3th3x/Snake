@@ -15,8 +15,8 @@ window.addEventListener("load", () => {
 
   document.addEventListener("keydown", (event) => {
     const code = event.code;
-    if (code === "ArrowUp" && direction != "up") direction = "up";
-    else if (code === "ArrowDown" && direction != "down") direction = "down";
+    if (code === "ArrowUp" && direction != "down") direction = "up";
+    else if (code === "ArrowDown" && direction != "up") direction = "down";
     else if (code === "ArrowLeft" && direction != "right") direction = "left";
     else if (code === "ArrowRight" && direction != "left") direction = "right";
     if (code === "KeyP" && isPause) {
@@ -34,7 +34,6 @@ window.addEventListener("load", () => {
     x: 9 * cell,
     y: 10 * cell,
   };
-  //console.log(wormy[0]);
 
   let spawnFood = {
     x: getRandomIntInclusive(1, 18) * cell,
@@ -54,7 +53,6 @@ window.addEventListener("load", () => {
       x: wormy[0].x,
       y: wormy[0].y,
     };
-    eatingTail(addHead, wormy);
     wormy.unshift(addHead);
   }
 
@@ -86,6 +84,7 @@ window.addEventListener("load", () => {
     ctx.fillStyle = "#fff";
     ctx.font = "42px Helvetica";
     ctx.fillText(`Your score: ${score}`, cell, cell * 1.3);
+    ctx.fillText(`P - pause`, cell * 13.3, cell * 1.3);
 
     //wormy
     for (let i = 0; i < wormy.length; i++) {
@@ -114,24 +113,25 @@ window.addEventListener("load", () => {
     if (direction === "up") wormy[0].y -= cell;
     if (direction === "down") wormy[0].y += cell;
 
-    if (
+    if (checkAreaCollision() || checkSelfCollision()) {
+      gameOver();
+    }
+  }
+
+  function checkAreaCollision() {
+    return (
       wormy[0].x < cell ||
       wormy[0].x > cell * 18 ||
       wormy[0].y < 2 * cell ||
       wormy[0].y > cell * 18
-    )
-      gameOver();
+    );
   }
 
-  //self eating
-  function eatingTail(head, arr) {
-    //   wormy.forEach((element) => {
-    //     if (head.x === element.x && head.y === element.y) gameOver();
-    //   });
-
-    for (let i = 0; i < arr.length; i++) {
-      if (head.x === arr[i].x && head.y === arr[i].y) gameOver();
-    }
+  function checkSelfCollision() {
+    return wormy.find(
+      (item, index) =>
+        index !== 0 && item.x === wormy[0].x && item.y === wormy[0].y
+    );
   }
 
   function gameOver() {
