@@ -6,12 +6,17 @@ window.addEventListener("load", () => {
   canvas.height = 640;
 
   let cell = 32;
-  let requestId;
-  let score = 0;
   let direction;
+  let score = 0;
+  let requestId;
   let isPause = true;
-
   let wormy = [];
+
+  //Стартовая позиция
+  wormy[0] = {
+    x: 9 * cell,
+    y: 10 * cell,
+  };
 
   document.addEventListener("keydown", (event) => {
     const code = event.code;
@@ -28,12 +33,6 @@ window.addEventListener("load", () => {
       requestId = requestAnimationFrame(animate);
     }
   });
-
-  //Стартовая позиция
-  wormy[0] = {
-    x: 9 * cell,
-    y: 10 * cell,
-  };
 
   let spawnFood = {
     x: getRandomIntInclusive(1, 18) * cell,
