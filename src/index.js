@@ -1,9 +1,10 @@
+import { getContext } from "./utils/context.js";
+
 window.addEventListener("load", () => {
-  // Canvas setup
-  const canvas = document.querySelector("#stage");
-  const ctx = canvas.getContext("2d");
-  canvas.width = 640;
-  canvas.height = 640;
+  let ctx = getContext();
+
+  ctx.canvas.width = 640;
+  ctx.canvas.height = 640;
 
   let cell = 32;
   let direction;
@@ -18,8 +19,8 @@ window.addEventListener("load", () => {
     y: 10 * cell,
   };
 
-  document.addEventListener("keydown", (event) => {
-    const code = event.code;
+  document.addEventListener("keydown", (e) => {
+    const code = e.code;
     if (code === "ArrowUp" && direction != "down") direction = "up";
     else if (code === "ArrowDown" && direction != "up") direction = "down";
     else if (code === "ArrowLeft" && direction != "right") direction = "left";
@@ -61,7 +62,7 @@ window.addEventListener("load", () => {
     ctx.shadowColor = "#000";
     //background
     ctx.fillStyle = "#8B4513";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     //cells
     let flag = true;
