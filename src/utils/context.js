@@ -1,8 +1,13 @@
-export function getContext() {
-  const canvas = document.querySelector("canvas");
-  const ctx = canvas.getContext("2d");
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from "../constants.js";
 
-  //ctx.imageSmoothingEnabled = false;
+export function getContext() {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = CANVAS_WIDTH;
+  canvas.height = CANVAS_HEIGHT;
+  document.body.append(canvas);
+
+  ctx.imageSmoothingEnabled = true;
 
   return ctx;
 }
