@@ -39,6 +39,8 @@ function makeArray(size) {
 }
 
 let stage1 = makeArray(19);
+let stage2 = makeArray(19);
+let stage3 = makeArray(19);
 
 //console.log(stage1);
 
@@ -71,4 +73,4 @@ let stage1 = makeArray(19);
 //   return Math.floor(Math.random() * (max - min + 1)) + min;
 // }
 
-export const stages = [stage1];
+export const stages = [stage1, stage2, stage3];

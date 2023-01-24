@@ -6,10 +6,7 @@ window.addEventListener("load", () => {
   const ctx = getContext();
   let game = new WormyGame(ctx);
 
-  console.log(game);
-
-  const fps = 10;
-
+  //  const fps = 10;
   function animate() {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     game.update();
@@ -17,7 +14,7 @@ window.addEventListener("load", () => {
 
     setTimeout(function () {
       requestAnimationFrame(animate);
-    }, 1000 / fps);
+    }, 1000 / game.fps);
   }
 
   animate();

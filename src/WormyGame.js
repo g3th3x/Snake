@@ -2,12 +2,20 @@ import { InputHandler } from "./utils/input.js";
 import { Wormy } from "./Wormy.js";
 import { Eat } from "./Eat.js";
 import { Score } from "./Score.js";
-import { GAME_STATE, CELL_SIZE } from "./constants.js";
+import {
+  GAME_STATE,
+  CELL_SIZE,
+  CANVAS_WIDTH,
+  CANVAS_HEIGHT,
+} from "./constants.js";
 import { stageMaker, stages } from "./stages.js";
 
 export class WormyGame {
   constructor(ctx) {
     this.ctx = ctx;
+    this.canvasWidth = CANVAS_WIDTH;
+    this.canvasHeight = CANVAS_HEIGHT;
+
     this.gameState = GAME_STATE.MAINMENU;
     this.gameObjects = [];
 
@@ -20,15 +28,17 @@ export class WormyGame {
     this.wormy = new Wormy();
     this.eat = new Eat();
     this.score = new Score(this.ctx);
+    this.scoreToWin = 5;
+
+    this.fps = 10;
 
     //new InputHandler(this.wormy, this);
     new InputHandler(this);
   }
   start() {
     if (
-      this.gameState !== GAME_STATE.MAINMENU
-      //   &&
-      // this.gameState !== GAME_STATE.NEXTSTAGE
+      this.gameState !== GAME_STATE.MAINMENU &&
+      this.gameState !== GAME_STATE.NEXTSTAGE
     )
       return;
 
@@ -36,44 +46,55 @@ export class WormyGame {
     this.gameObjects = [this.wormy, this.eat, this.score];
 
     this.gameState = GAME_STATE.START;
+
+    this.score.score = 0;
   }
   draw(ctx) {
     [...this.cells, ...this.gameObjects].forEach((object) => object.draw(ctx));
 
     // MAIN MENU
     if (this.gameState === GAME_STATE.MAINMENU) {
-      ctx.beginPath();
-      ctx.font = "20px Arial";
-      ctx.fillStyle = "#fff";
-      ctx.textAlign = "center";
-      ctx.fillText("Press ENTER to START", 300, 300);
+      showText(
+        this.ctx,
+        "Press ENTER to START",
+        this.canvasWidth,
+        this.canvasHeight
+      );
     }
 
     // GAME OVER
     if (this.gameState === GAME_STATE.GAMEOVER) {
-      ctx.beginPath();
-      ctx.font = "20px Arial";
-      ctx.fillStyle = "#fff";
-      ctx.textAlign = "center";
-      ctx.fillText("GAME OVER, Press R to START", 300, 300);
+      shadowScreen(this.ctx, this.canvasWidth, this.canvasHeight);
+      showText(this.ctx, "GAME OVER", this.canvasWidth, this.canvasHeight);
+      showText(
+        this.ctx,
+        "Press R to START",
+        this.canvasWidth,
+        this.canvasHeight + 60
+      );
     }
 
     // PAUSE GAME
     if (this.gameState === GAME_STATE.PAUSE) {
-      ctx.beginPath();
-      ctx.font = "20px Arial";
-      ctx.fillStyle = "#fff";
-      ctx.textAlign = "center";
-      ctx.fillText("PAUSE", 300, 300);
+      shadowScreen(this.ctx, this.canvasWidth, this.canvasHeight);
+      showText(this.ctx, "PAUSE", this.canvasWidth, this.canvasHeight);
     }
 
     // WINNER
     if (this.gameState === GAME_STATE.WINNER) {
-      ctx.beginPath();
-      ctx.font = "20px Arial";
-      ctx.fillStyle = "#fff";
-      ctx.textAlign = "center";
-      ctx.fillText("WINNER", 300, 300);
+      shadowScreen(this.ctx, this.canvasWidth, this.canvasHeight);
+      showText(
+        this.ctx,
+        "CONGRATULATIONS, YOU'VE WON",
+        this.canvasWidth,
+        this.canvasHeight
+      );
+      showText(
+        this.ctx,
+        "Press R to START",
+        this.canvasWidth,
+        this.canvasHeight + 60
+      );
     }
   }
   update() {
@@ -85,20 +106,45 @@ export class WormyGame {
     )
       return;
 
-    if (this.wormy.death == true) this.gameState = GAME_STATE.GAMEOVER;
-    console.log(this.wormy.death);
+    if (this.wormy.death === true) this.gameState = GAME_STATE.GAMEOVER;
 
-    if (this.score.score === 3) this.gameState = GAME_STATE.WINNER;
+    // if (this.score.score === this.scoreToWin)
+    //   this.gameState = GAME_STATE.WINNER;
 
     this.start();
     this.wormy.update(this.score, this.eat);
+
+    if (this.score.score === this.scoreToWin) {
+      if (this.nextStage++ !== this.stages.length - 1) {
+        this.gameState = GAME_STATE.NEXTSTAGE;
+        this.fps += 5;
+        this.start();
+      } else {
+        this.gameState = GAME_STATE.WINNER;
+      }
+    }
   }
   pauseGame() {
-    this.gameState !== GAME_STATE.PAUSE
-      ? (this.gameState = GAME_STATE.PAUSE)
-      : (this.gameState = this.gameState.START);
+    if (this.gameState !== GAME_STATE.GAMEOVER)
+      this.gameState !== GAME_STATE.PAUSE
+        ? (this.gameState = GAME_STATE.PAUSE)
+        : (this.gameState = this.gameState.START);
   }
   restartGame() {
     document.location.reload();
   }
+}
+
+function shadowScreen(ctx, canvasWidth, canvasHeight) {
+  ctx.beginPath();
+  ctx.fillStyle = "rgba(0,0,0,.5)";
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+}
+
+function showText(ctx, text, canvasWidth, canvasHeight) {
+  ctx.beginPath();
+  ctx.font = "bold 24px Arial";
+  ctx.fillStyle = "#fff";
+  ctx.textAlign = "center";
+  ctx.fillText(text, canvasWidth / 2, canvasHeight / 2);
 }

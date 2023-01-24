@@ -1,4 +1,5 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT, CELL_SIZE } from "./constants.js";
+import { playRunSound, playEatingSound, playDeathSound } from "./audio.js";
 
 export class Wormy {
   constructor() {
@@ -13,6 +14,8 @@ export class Wormy {
     this.wormyTailLen = 1;
 
     this.death = false;
+
+    this.direction;
 
     this.moving();
     this.start();
@@ -32,25 +35,29 @@ export class Wormy {
   }
   moving() {
     document.addEventListener("keydown", (e) => {
-      if (e.code == "ArrowUp") {
-        console.log(e.code);
+      if (e.code === "ArrowUp" && this.direction !== "down") {
         this.dy = -this.cellSize;
         this.dx = 0;
-      } else if (e.code == "ArrowLeft") {
+        this.direction = "up";
+      } else if (e.code == "ArrowLeft" && this.direction !== "right") {
         this.dx = -this.cellSize;
         this.dy = 0;
-      } else if (e.code == "ArrowDown") {
+        this.direction = "left";
+      } else if (e.code == "ArrowDown" && this.direction !== "up") {
         this.dy = this.cellSize;
         this.dx = 0;
-      } else if (e.code == "ArrowRight") {
+        this.direction = "down";
+      } else if (e.code == "ArrowRight" && this.direction !== "left") {
         this.dx = this.cellSize;
         this.dy = 0;
+        this.direction = "right";
       }
     });
   }
   update(score, eat) {
     this.position.x += this.dx;
     this.position.y += this.dy;
+    playRunSound();
 
     // Infinity
     // if (this.position.x < 0) {
@@ -75,6 +82,7 @@ export class Wormy {
     this.wormyTail.forEach((cell) => {
       if (cell.x === eat.position.x && cell.y === eat.position.y) {
         this.wormyTailLen++;
+        playEatingSound();
         score.increase();
         eat.start();
       }
@@ -95,8 +103,11 @@ export class Wormy {
       this.position.x + this.cellSize >= this.canvasWidth ||
       this.position.y - this.cellSize <= 0 ||
       this.position.y + this.cellSize >= this.canvasHeight
-    )
+    ) {
       this.death = true;
+      playDeathSound();
+    }
+
     // console.log(this.death);
   }
 }
