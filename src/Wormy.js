@@ -11,7 +11,7 @@ export class Wormy {
     this.dy = 0;
 
     this.wormyTail = [];
-    this.wormyTailLen = 1;
+    this.wormyTailLen = 20;
 
     this.death = false;
 
@@ -79,23 +79,21 @@ export class Wormy {
     }
 
     // Collision (eating)
-    this.wormyTail.forEach((cell) => {
+    this.wormyTail.forEach((cell, index) => {
       if (cell.x === eat.position.x && cell.y === eat.position.y) {
         this.wormyTailLen++;
         playEatingSound();
         score.increase();
         eat.start();
       }
+      // Self-eating (death)
+      for (let i = index + 1; i < this.wormyTail.length; i++) {
+        if (cell.x == this.wormyTail[i].x && cell.y == this.wormyTail[i].y) {
+          this.death = true;
+          playDeathSound();
+        }
+      }
     });
-
-    // Restriction
-    // if (this.position.x <= 0) this.position.x = this.cellSize;
-    // if (this.position.x + this.cellSize >= this.canvasWidth)
-    //   this.position.x = this.canvasWidth - this.cellSize * 2;
-    // if (this.position.y - this.cellSize <= 0)
-    //   this.position.y = this.cellSize * 2;
-    // if (this.position.y + this.cellSize >= this.canvasHeight)
-    //   this.position.y = this.canvasHeight - this.cellSize * 2;
 
     // Death
     if (
@@ -108,6 +106,13 @@ export class Wormy {
       playDeathSound();
     }
 
-    // console.log(this.death);
+    // Restriction
+    // if (this.position.x <= 0) this.position.x = this.cellSize;
+    // if (this.position.x + this.cellSize >= this.canvasWidth)
+    //   this.position.x = this.canvasWidth - this.cellSize * 2;
+    // if (this.position.y - this.cellSize <= 0)
+    //   this.position.y = this.cellSize * 2;
+    // if (this.position.y + this.cellSize >= this.canvasHeight)
+    //   this.position.y = this.canvasHeight - this.cellSize * 2;
   }
 }
