@@ -11,7 +11,7 @@ export class Wormy {
     this.dy = 0;
 
     this.wormyTail = [];
-    this.wormyTailLen = 20;
+    this.wormyTailLen = 1;
 
     this.death = false;
 
@@ -26,7 +26,6 @@ export class Wormy {
       y: 11 * this.cellSize,
     };
   }
-  //   reset() {}
   draw(ctx) {
     this.wormyTail.forEach((el, index) => {
       index == 0 ? (ctx.fillStyle = "#f00") : (ctx.fillStyle = "#00aa00");

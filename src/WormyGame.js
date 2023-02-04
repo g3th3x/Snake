@@ -27,12 +27,13 @@ export class WormyGame {
 
     this.wormy = new Wormy();
     this.eat = new Eat();
-    this.score = new Score(this.ctx);
-    this.scoreToWin = 5;
+
+    this.scoreToWin = 10;
+    this.score = new Score(this.ctx, this.scoreToWin);
 
     this.fps = 10;
+    this.levelSpeed = 1;
 
-    //new InputHandler(this.wormy, this);
     new InputHandler(this);
   }
   start() {
@@ -47,13 +48,14 @@ export class WormyGame {
 
     this.gameState = GAME_STATE.START;
 
-    this.score.score = 0;
+    this.score.reset();
   }
   draw(ctx) {
     [...this.cells, ...this.gameObjects].forEach((object) => object.draw(ctx));
 
     // MAIN MENU
     if (this.gameState === GAME_STATE.MAINMENU) {
+      showLogo(this.ctx, "WORMY", this.canvasWidth, this.canvasHeight - 90);
       showText(
         this.ctx,
         "Press ENTER to START",
@@ -108,9 +110,6 @@ export class WormyGame {
 
     if (this.wormy.death === true) this.gameState = GAME_STATE.GAMEOVER;
 
-    // if (this.score.score === this.scoreToWin)
-    //   this.gameState = GAME_STATE.WINNER;
-
     this.start();
     this.wormy.update(this.score, this.eat);
 
@@ -118,6 +117,7 @@ export class WormyGame {
       if (this.nextStage++ !== this.stages.length - 1) {
         this.gameState = GAME_STATE.NEXTSTAGE;
         this.fps += 5;
+        this.score.levelSpeed += 1;
         this.start();
       } else {
         this.gameState = GAME_STATE.WINNER;
@@ -144,6 +144,14 @@ function shadowScreen(ctx, canvasWidth, canvasHeight) {
 function showText(ctx, text, canvasWidth, canvasHeight) {
   ctx.beginPath();
   ctx.font = "bold 24px Arial";
+  ctx.fillStyle = "#fff";
+  ctx.textAlign = "center";
+  ctx.fillText(text, canvasWidth / 2, canvasHeight / 2);
+}
+
+function showLogo(ctx, text, canvasWidth, canvasHeight) {
+  ctx.beginPath();
+  ctx.font = "bold 60px Arial";
   ctx.fillStyle = "#fff";
   ctx.textAlign = "center";
   ctx.fillText(text, canvasWidth / 2, canvasHeight / 2);

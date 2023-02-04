@@ -17,13 +17,11 @@ export function stageMaker(game, stage) {
   return cells;
 }
 
-function makeArray(size) {
-  let arr = [],
-    i,
-    j;
-  for (i = 0; i < size; i++) {
+function stageOne(size) {
+  let arr = [];
+  for (let i = 0; i < size; i++) {
     arr[i] = [];
-    for (j = 0; j < size; j++) {
+    for (let j = 0; j < size; j++) {
       arr[i][j] = (i + j) % 2 === 0 ? 1 : 0;
     }
   }
@@ -38,9 +36,46 @@ function makeArray(size) {
   return arr;
 }
 
-let stage1 = makeArray(19);
-let stage2 = makeArray(19);
-let stage3 = makeArray(19);
+function stageTwo(size) {
+  let arr = [],
+    l = 8,
+    r = 10,
+    figSize = 9;
+
+  for (let i = 0; i < size; i++) {
+    arr[i] = [];
+    for (let j = 0; j < size; j++) {
+      arr[i][j] = j > l && j < r ? 1 : 0;
+    }
+    if (i < figSize) {
+      l--;
+      r++;
+    } else {
+      l++;
+      r--;
+    }
+  }
+
+  return arr;
+}
+
+function stageThree(size) {
+  let arr = [];
+  let half = size;
+  for (let i = 0; i < size; i++) {
+    arr[i] = [];
+    for (let j = 0; j < size; j++) {
+      arr[i][j] = j < half ? 1 : 0;
+    }
+    half--;
+  }
+
+  return arr;
+}
+
+let stage1 = stageOne(19);
+let stage2 = stageTwo(19);
+let stage3 = stageThree(19);
 
 //console.log(stage1);
 
