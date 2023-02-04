@@ -22,7 +22,7 @@ export class Eat {
       this.cellSize
     );
   }
-  update() {}
+  //   update() {}
 }
 
 function getRand(min, max) {
